@@ -38,10 +38,19 @@ func main()  {
 	fmt.Println(isValidBST_2(nil))
 	fmt.Println(isValidBST_2(&TreeNode{}))
 	fmt.Println(isValidBST_2(&TreeNode{0, nil, nil}))
+
+	fmt.Println()
 	fmt.Println(isValidBST_3(&node))
 	fmt.Println(isValidBST_3(nil))
 	fmt.Println(isValidBST_3(&TreeNode{}))
 	fmt.Println(isValidBST_3(&TreeNode{0, nil, nil}))
+
+	// 递归优化
+	fmt.Println()
+	fmt.Println(isValidBST_4(&node))
+	fmt.Println(isValidBST_4(nil))
+	fmt.Println(isValidBST_4(&TreeNode{}))
+	fmt.Println(isValidBST_4(&TreeNode{0, nil, nil}))
 }
 
 /**
@@ -118,4 +127,16 @@ func helper2(root *TreeNode, min int, max int) bool {
 		return false
 	}
 	return helper2(root.Left, min, root.Val) && helper2(root.Right, root.Val, max)
+}
+
+// 解法2递归优化
+func isValidBST_4(root *TreeNode) bool {
+	return check(root, -1 << 63, 1 << 63 - 1)
+}
+
+func check(root *TreeNode, min int, max int) bool {
+	if root == nil {
+		return true
+	}
+	return root.Val > min && root.Val < max && check(root.Left, min, root.Val) && check(root.Right, root.Val, max)
 }
