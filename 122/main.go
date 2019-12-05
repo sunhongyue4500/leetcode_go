@@ -82,3 +82,31 @@ func maxProfit_3(prices []int) int {
 	}
 	return res
 }
+
+// 使用dp，dp[i][2]
+// dp[i][0]，表示截止到第i天不持有股票的最大利润，
+// dp[i][1]，表示截止到第i天持有股票的最大利润
+
+// dp[i][0] = max{dp[i-1][0], dp[i-1][1]+price[i]}，不动，或卖出的最大值
+// dp[i][1] = max{dp[i-1][0]-price[i], dp[i-1][1]}, 买入，或者继续持有
+func maxProfit2(prices []int) int {
+	last0, last1 := 0, 0-prices[0]
+	cur0, cur1 := 0, 0
+	res := 0
+	for i := 1; i < len(prices); i++ {
+		cur0 = max(last0, last1+prices[i])
+		cur1 = max(last0-prices[i], last1)
+		if res < cur0 {
+			res = cur0
+		}
+		last0, last1 = cur0, cur1
+	}
+	return res
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
