@@ -15,6 +15,8 @@ func main() {
 	fmt.Println(obj.GetRear(), obj.GetFront())
 }
 
+// 1. 基于链表而不是数组
+// 2. 基于数组，不需要移动元素，维护两个游标
 type MyCircularDeque struct {
 	head  *Node
 	tail  *Node
@@ -144,3 +146,75 @@ func (this *MyCircularDeque) IsFull() bool {
  * param_7 := obj.IsEmpty();
  * param_8 := obj.IsFull();
  */
+
+// 2. 基于数组，使用两个循环游标标记start和end
+//type MyCircularDeque struct {
+//	data  []int
+//	front int
+//	last  int
+//}
+//
+//func Constructor(k int) MyCircularDeque {
+//	return MyCircularDeque{
+//		data:  make([]int, k+1, k+1),
+//		front: 0, // 起始元素位置
+//		last:  0, // 最后一个元素的下一个位置
+//	}
+//}
+//
+//func (this *MyCircularDeque) InsertFront(value int) bool {
+//	if this.IsFull() {
+//		return false
+//	}
+//	this.front = (len(this.data) + this.front - 1) % len(this.data)
+//	this.data[this.front] = value
+//	return true
+//}
+//
+//func (this *MyCircularDeque) InsertLast(value int) bool {
+//	if this.IsFull() {
+//		return false
+//	}
+//	this.data[this.last] = value
+//	this.last = (this.last + 1) % len(this.data)
+//	return true
+//}
+//
+//func (this *MyCircularDeque) DeleteFront() bool {
+//	if this.IsEmpty() {
+//		return false
+//	}
+//	this.front = (this.front + 1) % len(this.data)
+//	return true
+//}
+//
+//func (this *MyCircularDeque) DeleteLast() bool {
+//	if this.IsEmpty() {
+//		return false
+//	}
+//	this.last = (len(this.data) + this.last - 1) % len(this.data) // 循环左移一位
+//	return true
+//}
+//
+//func (this *MyCircularDeque) GetFront() int {
+//	if this.IsEmpty() {
+//		return -1
+//	}
+//	return this.data[this.front]
+//}
+//
+//func (this *MyCircularDeque) GetRear() int {
+//	if this.IsEmpty() {
+//		return -1
+//	}
+//
+//	return this.data[(len(this.data)+this.last-1)%len(this.data)]
+//}
+//
+//func (this *MyCircularDeque) IsEmpty() bool {
+//	return this.last == this.front
+//}
+//
+//func (this *MyCircularDeque) IsFull() bool {
+//	return (this.last+1)%len(this.data) == this.front
+//}
