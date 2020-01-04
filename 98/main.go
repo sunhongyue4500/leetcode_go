@@ -5,12 +5,12 @@ import (
 	"math"
 )
 
-func main()  {
-	//node1 := TreeNode{
-	//	Val:2,
-	//	Left:&TreeNode{1, nil, nil},
-	//	Right:&TreeNode{3, nil, nil},
-	//}
+func main() {
+	node1 := TreeNode{
+		Val:   2,
+		Left:  &TreeNode{1, nil, nil},
+		Right: &TreeNode{3, nil, nil},
+	}
 	//fmt.Println(isValidBST(&node1))	// true
 
 	//node := TreeNode{
@@ -22,16 +22,16 @@ func main()  {
 	//fmt.Println(isValidBST(nil))
 	//fmt.Println(isValidBST(&TreeNode{}))
 	node := TreeNode{
-		Val:10,
-		Left:&TreeNode{
-			Val:5,
-			Left:nil,
-			Right:nil,
+		Val: 10,
+		Left: &TreeNode{
+			Val:   5,
+			Left:  nil,
+			Right: nil,
 		},
-		Right:&TreeNode{
-			Val:15,
-			Left:&TreeNode{6, nil, nil},
-			Right:&TreeNode{20, nil, nil},
+		Right: &TreeNode{
+			Val:   15,
+			Left:  &TreeNode{6, nil, nil},
+			Right: &TreeNode{20, nil, nil},
 		},
 	}
 	//fmt.Println(isValidBST_2(&node))
@@ -51,6 +51,10 @@ func main()  {
 	fmt.Println(isValidBST_4(nil))
 	fmt.Println(isValidBST_4(&TreeNode{}))
 	fmt.Println(isValidBST_4(&TreeNode{0, nil, nil}))
+
+	fmt.Println()
+	fmt.Println(isValidBST_5(&node))
+	fmt.Println(isValidBST_5(&node1))
 }
 
 /**
@@ -62,19 +66,19 @@ func main()  {
  * }
  */
 
-
 type TreeNode struct {
-	Val int
-	Left *TreeNode
+	Val   int
+	Left  *TreeNode
 	Right *TreeNode
 }
 
 var arr []int
+
 func isValidBST(root *TreeNode) bool {
 	// terminator
 	arr = make([]int, 0)
 	inorder(root)
-	for i:=1; i<len(arr); i++ {
+	for i := 1; i < len(arr); i++ {
 		if arr[i] <= arr[i-1] {
 			return false
 		}
@@ -94,6 +98,7 @@ func inorder(root *TreeNode) {
 
 // 中序遍历优化，只保留前一个节点
 var lastNode *TreeNode
+
 func isValidBST_2(root *TreeNode) bool {
 	lastNode = nil
 	return helper(root)
@@ -110,7 +115,7 @@ func helper(root *TreeNode) bool {
 	if lastNode != nil && lastNode.Val >= root.Val {
 		return false
 	}
-	lastNode = root // 记录
+	lastNode = root           // 记录
 	return helper(root.Right) // 判断右节点
 }
 
@@ -131,7 +136,7 @@ func helper2(root *TreeNode, min int, max int) bool {
 
 // 解法2递归优化
 func isValidBST_4(root *TreeNode) bool {
-	return check(root, -1 << 63, 1 << 63 - 1)
+	return check(root, -1<<63, 1<<63-1)
 }
 
 func check(root *TreeNode, min int, max int) bool {
@@ -139,4 +144,62 @@ func check(root *TreeNode, min int, max int) bool {
 		return true
 	}
 	return root.Val > min && root.Val < max && check(root.Left, min, root.Val) && check(root.Right, root.Val, max)
+}
+
+type Stack []*TreeNode
+
+func (stack *Stack) empty() bool {
+	return len(*stack) == 0
+}
+
+func (stack *Stack) peek() *TreeNode {
+	if stack.empty() {
+		return nil
+	}
+	return (*stack)[len(*stack)-1]
+}
+
+func (stack *Stack) pop() *TreeNode {
+	if stack.empty() {
+		return nil
+	}
+	temp := (*stack)[len(*stack)-1]
+	*stack = (*stack)[:len(*stack)-1]
+	return temp
+}
+
+func (stack *Stack) push(temp *TreeNode) {
+	*stack = append(*stack, temp)
+}
+
+// 使用迭代，手动维护栈
+func isValidBST_5(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+
+	visited := make(map[*TreeNode]struct{})
+	stack := Stack{root}
+	var lastNode *TreeNode
+
+	for !stack.empty() {
+		node := stack.pop()
+		if _, ok := visited[node]; ok {
+			if lastNode != nil && node.Val <= lastNode.Val {
+				return false
+			}
+			lastNode = node
+		} else {
+			// 入栈
+			if node.Right != nil {
+				stack.push(node.Right)
+			}
+			stack.push(node)
+			visited[node] = struct{}{}
+			if node.Left != nil {
+				stack.push(node.Left)
+			}
+		}
+	}
+	return true
 }
