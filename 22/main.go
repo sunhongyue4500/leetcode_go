@@ -10,11 +10,13 @@ func main() {
 	fmt.Println(generateParenthesis(2))
 
 	fmt.Println(generateParenthesis_3(3))
+	fmt.Println(generateParenthesis_4(3))
 }
 
 // 1. 使用暴力，对于n对，可以生成2n个位置，对于每一个位置，可以是(或者)
 // 2. DFS
 // 3. BFS
+// 4. 动态规划
 func generateParenthesis(n int) []string {
 	res := []string{}
 	helper(n, 0, 0, "", &res)
@@ -104,4 +106,33 @@ func generateParenthesis_3(n int) []string {
 		}
 	}
 	return res
+}
+
+// 使用动态规划
+// dp[i]，使用i对括号能生成的组合
+// dp[i] = "(" + dp[可能的括号对数] + ")" + dp[剩下的括号对数]
+// “可能的括号对数” 与 “剩下的括号对数” 之和得为 i - 1，故“可能的括号对数” j 可以从 0 开始，最大为i - 1；
+// “剩下的括号对数” + j = i - 1，故 “剩下的括号对数” = i - j - 1。
+func generateParenthesis_4(n int) []string {
+	if n == 0 {
+		return nil
+	}
+	dp := [][]string{}
+	dp0 := []string{""}
+	dp = append(dp, dp0)
+
+	for i := 1; i <= n; i++ {
+		cur := []string{}
+		for j := 0; j < i; j++ {
+			str1 := dp[j]
+			str2 := dp[i-1-j]
+			for _, s1 := range str1 {
+				for _, s2 := range str2 {
+					cur = append(cur, "("+s1+")"+s2)
+				}
+			}
+		}
+		dp = append(dp, cur)
+	}
+	return dp[n]
 }
