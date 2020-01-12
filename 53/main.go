@@ -10,6 +10,8 @@ func main() {
 // 暴力法：所有可能的方式都尝试一遍
 // 使用DP
 // 使用分治法
+
+// 分治
 func maxSubArray(nums []int) int {
 	return help(nums, 0, len(nums)-1)
 }
@@ -39,4 +41,18 @@ func max(a, b int) int {
 		return a
 	}
 	return b
+}
+
+// 暴力，时间复杂度O(N^2)，空间复杂度O(1)
+func maxSubArray2(nums []int) int {
+	res := nums[0]
+	temp := 0
+	for i := 0; i < len(nums); i++ {
+		temp = 0
+		for j := i; j < len(nums); j++ {
+			temp += nums[j]
+			res = max(temp, res)
+		}
+	}
+	return res
 }
