@@ -3,7 +3,7 @@ package main
 // 用数组实现的字典树，比较浪费空间，查询效率较高
 type Trie struct {
 	child [26]*Trie
-	val   byte
+	val   byte // 这个字段可根据情况去掉
 	end   bool
 }
 
@@ -38,10 +38,7 @@ func (this *Trie) Search(word string) bool {
 		}
 		cur = cur.child[j]
 	}
-	if !cur.end {
-		return false
-	}
-	return true
+	return cur.end
 }
 
 /** Returns if there is any word in the trie that starts with the given prefix. */
