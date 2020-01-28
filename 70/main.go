@@ -5,6 +5,8 @@ import "fmt"
 func main() {
 	fmt.Println(climbStairs(2))
 	fmt.Println(climbStairs2(2))
+	fmt.Println(climbStairs(10))
+	fmt.Println(climbStairs2(10))
 }
 
 func climbStairs(n int) int {
@@ -16,12 +18,14 @@ func climbStairs(n int) int {
 	return dp[n]
 }
 
-// 状态压缩
+// 状态压缩，仅使用两个变量
 func climbStairs2(n int) int {
-	lastlast, last, res := 0, 1, 1
-	for i := 1; i <= n; i++ {
-		res = last + lastlast
-		lastlast, last = last, res
+	if n < 3 {
+		return n
 	}
-	return res
+	first, sec := 1, 2
+	for i := 3; i <= n; i++ {
+		first, sec = sec, first+sec
+	}
+	return sec
 }
