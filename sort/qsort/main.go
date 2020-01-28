@@ -8,6 +8,7 @@ func main() {
 	fmt.Println(arr)
 }
 
+// 挖坑填数
 func qsort(arr []int, left int, right int) {
 	start := left
 	end := right
