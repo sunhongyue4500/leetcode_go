@@ -115,47 +115,62 @@ func numIslands(grid [][]byte) int {
 	return uf.Count()
 }
 
-// BFS
+// BFS, flood fill
 func numIslands2(grid [][]byte) int {
-	nr := len(grid)
-	if nr == 0 {
+	if len(grid) == 0 || len(grid[0]) == 0 {
 		return 0
 	}
-	nc := len(grid[0])
 	res := 0
-	for i := 0; i < nr; i++ {
-		for j := 0; j < nc; j++ {
+	nr, nc := len(grid), len(grid[0])
+	dir := [4][2]int{[2]int{1, 0}, [2]int{-1, 0}, [2]int{0, 1}, [2]int{0, -1}}
+	idx, row, col, dx, dy := 0, 0, 0, 0, 0
+	for i := 0; i < len(grid); i++ {
+		for j := 0; j < len(grid[0]); j++ {
 			if grid[i][j] == '1' {
-				res = res + 1
-				queue := make([]int, 0)
-				// 传入索引
-				queue = append(queue, i*nc+j)
-				for len(queue) != 0 {
-					fmt.Println("qulen:", len(queue))
-					temp := queue[0]
+				res++
+				// flood fill
+				queue := []int{i*nc + j}
+				for len(queue) > 0 {
+					idx = queue[0]
 					queue = queue[1:]
-					row := temp / nc
-					col := temp % nc
-					// 将相邻的都置成0
-					if row-1 >= 0 && grid[row-1][col] == '1' {
-						queue = append(queue, (row-1)*nc+col)
-						grid[row-1][col] = '0'
-					}
-					if row+1 < nr && grid[row+1][col] == '1' {
-						queue = append(queue, (row+1)*nc+col)
-						grid[row+1][col] = '0'
-					}
-					if col-1 >= 0 && grid[row][col-1] == '1' {
-						queue = append(queue, row*nc+col-1)
-						grid[row][col-1] = '0'
-					}
-					if col+1 < nc && grid[row][col+1] == '1' {
-						queue = append(queue, row*nc+col+1)
-						grid[row][col+1] = '0'
+					row, col = idx/nc, idx%nc
+					grid[row][col] = '0'
+					for k := 0; k < 4; k++ {
+						dx, dy = row+dir[k][0], col+dir[k][1]
+						if dx >= 0 && dx < nr && dy >= 0 && dy < nc && grid[dx][dy] == '1' {
+							queue = append(queue, dx*nc+dy)
+							grid[dx][dy] = '0'
+						}
 					}
 				}
 			}
 		}
 	}
 	return res
+}
+
+// DFS flood fill
+func numIslands3(grid [][]byte) int {
+	res := 0
+	for i := 0; i < len(grid); i++ {
+		for j := 0; j < len(grid[0]); j++ {
+			if grid[i][j] == '1' {
+				res++
+				helper(grid, i, j)
+			}
+		}
+	}
+	return res
+}
+
+func helper(grid [][]byte, i, j int) {
+	nr, nc := len(grid), len(grid[0])
+	if i < 0 || i >= nr || j < 0 || j >= nc || grid[i][j] == '0' {
+		return
+	}
+	grid[i][j] = '0'
+	helper(grid, i+1, j)
+	helper(grid, i-1, j)
+	helper(grid, i, j+1)
+	helper(grid, i, j-1)
 }
