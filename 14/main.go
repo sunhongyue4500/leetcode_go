@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -60,9 +61,11 @@ func (trie *Trie) startWith(str string) bool {
 }
 
 func main() {
-	str := []string{"flower", "flow", "floht", "fli"}
+	str := []string{"flower", "flow", "fldeft", "floht", "fli", "flabac"}
 	str2 := []string{"", "floht"}
 	str3 := []string{"aa", "a"}
+	str4 := []string{"a"}
+	str5 := []string{""}
 	fmt.Println(longestCommonPrefix(str))
 	fmt.Println(longestCommonPrefix(str2))
 	fmt.Println(longestCommonPrefix2(str))
@@ -77,6 +80,13 @@ func main() {
 	fmt.Println(longestCommonPrefix3(str))
 	fmt.Println(longestCommonPrefix3(str2))
 	fmt.Println(longestCommonPrefix3(str3))
+	// sort and compare
+	fmt.Println("sort and compare")
+	fmt.Println(longestCommonPrefix4(str))
+	fmt.Println(longestCommonPrefix4(str2))
+	fmt.Println(longestCommonPrefix4(str3))
+	fmt.Println(longestCommonPrefix4(str4))
+	fmt.Println(longestCommonPrefix4(str5))
 }
 
 // 1. 暴力，直接从头往后, O(MN)，M为最长公共前缀，N为字符串个数
@@ -155,4 +165,28 @@ func longestCommonPrefix3(strs []string) string {
 		temp = temp.Nodes[temp.val-'a']
 	}
 	return prefix
+}
+
+// sort and compare
+func longestCommonPrefix4(strs []string) string {
+	if len(strs) == 0 {
+		return ""
+	}
+	temp := sort.StringSlice(strs)
+	temp.Sort()
+	// 比较第一个和最后一个
+	strA := temp[0]
+	strB := temp[len(temp)-1]
+	length := len(strA)
+	if length > len(strB) {
+		length = len(strB)
+	}
+	res := ""
+	for i := 0; i < length; i++ {
+		if strA[i] != strB[i] {
+			break
+		}
+		res += string(strA[i])
+	}
+	return res
 }
